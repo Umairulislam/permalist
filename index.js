@@ -90,11 +90,14 @@ app.post(
   })
 )
 
-// Logout user
-app.get("/logout", (req, res, next) => {
+// Logout route
+app.get("/logout", (req, res) => {
   req.logout((err) => {
-    if (err) return next(err)
-    console.log(`User logged out`)
+    if (err) {
+      console.error("Error logging out user", err)
+      return res.send("Error logging out user")
+    }
+    console.log("User logged out successfully")
     res.redirect("/")
   })
 })
