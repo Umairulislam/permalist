@@ -3,6 +3,9 @@ import bodyParser from "body-parser"
 import dotenv from "dotenv"
 import pg from "pg"
 import bcrypt from "bcrypt"
+import session from "express-session"
+import passport from "passport"
+import { Strategy as LocalStrategy } from "passport-local"
 
 // Initialize environment variables
 dotenv.config()
@@ -33,24 +36,67 @@ app.set("view engine", "ejs")
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static("public"))
 
+// Setup express session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 }, // 24 hours
+  })
+)
+
+// Initialize passport
+app.use(passport.initialize())
+app.use(passport.session())
+
+// Middleware to check if user is authenticated
+const isAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+  res.redirect("/login")
+}
+
 // Routes
 
 // Home route
 app.get("/", (req, res) => {
   res.render("home")
-  console.log("Rendering home page")
 })
 
 // Login route
 app.get("/login", (req, res) => {
   res.render("login")
-  console.log("Rendering login page")
 })
 
 // Register route
 app.get("/register", (req, res) => {
   res.render("register")
-  console.log("Rendering register page")
+})
+
+// Todos route (protected)
+app.get("/todos", isAuthenticated, async (req, res) => {
+  res.render("todos")
+  console.log(`Rendering todos for user: ${req.user.email}`)
+})
+
+// Login user
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/todos",
+    failureRedirect: "/login",
+  })
+)
+
+// Logout user
+app.get("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) return next(err)
+    console.log(`User logged out`)
+    res.redirect("/")
+  })
 })
 
 // Register new user
@@ -63,8 +109,6 @@ app.post("/register", async (req, res) => {
       email,
     ])
 
-    console.log(`User check result: ${JSON.stringify(userCheck.rows)}`)
-
     if (userCheck.rows.length > 0) {
       res.send("User already exists")
       console.log("User already exists")
@@ -74,50 +118,78 @@ app.post("/register", async (req, res) => {
         "INSERT INTO users (full_name, email, password) VALUES ($1, $2, $3)",
         [name, email, hashedPassword]
       )
-      console.log(
-        "User registered successfully: ",
-        JSON.stringify(insertUser.rows)
-      )
-    }
+      console.log("User registered successfully")
 
-    res.render("todos.ejs")
+      const newUser = insertUser.rows[0]
+      req.login(newUser, (err) => {
+        if (err) {
+          console.error("Error logging in user", err)
+          return res.send("Error logging in user")
+        }
+        return res.redirect("/todos")
+      })
+    }
   } catch (error) {
     console.error("Error registering user", error)
     res.send("Error registering user")
   }
 })
 
-// Login user
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body
-  console.log(`Logging in user with email: ${email}`)
+// Passport local strategy for email and password authentication
+passport.use(
+  "local",
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    async function (email, password, cb) {
+      try {
+        const userCheck = await db.query(
+          "SELECT * FROM users WHERE email = $1",
+          [email]
+        )
 
-  try {
-    const userCheck = await db.query("SELECT * FROM users WHERE email = $1", [
-      email,
-    ])
+        if (userCheck.rows.length > 0) {
+          const user = userCheck.rows[0]
+          console.log("User found: ", user.email)
 
-    if (userCheck.rows.length > 0) {
-      const user = userCheck.rows[0]
-      console.log("User found: ", JSON.stringify(user))
-
-      const passMatch = await bcrypt.compare(password, user.password)
-      console.log("Password match: ", passMatch)
-
-      if (passMatch) {
-        res.render("todos.ejs")
-        console.log("User logged in successfully")
-      } else {
-        res.send("Incorrect password")
-        console.log("Incorrect password")
+          const passMatch = await bcrypt.compare(password, user.password)
+          if (passMatch) {
+            console.log("User logged in successfully")
+            return cb(null, user)
+          } else {
+            console.log("Incorrect password")
+            return cb(null, false)
+          }
+        } else {
+          console.log("User does not exist")
+          return cb(null, false)
+        }
+      } catch (error) {
+        console.error("Error during authentication", error)
+        return cb(error)
       }
+    }
+  )
+)
+
+// Serialize user
+passport.serializeUser((user, cb) => {
+  cb(null, user.id)
+})
+
+// Deserialize user
+passport.deserializeUser(async (id, cb) => {
+  try {
+    const userCheck = await db.query("SELECT * FROM users WHERE id = $1", [id])
+    if (userCheck.rows.length > 0) {
+      cb(null, userCheck.rows[0])
     } else {
-      res.send("User does not exist")
-      console.log("User does not exist")
+      cb(new Error("User not found"))
     }
   } catch (error) {
-    console.error("Error logging in user", error)
-    res.send("Error logging in user")
+    cb(error)
   }
 })
 
