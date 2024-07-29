@@ -1,2 +1,4 @@
 node_modules
 .env
+query.sql
+app.js
