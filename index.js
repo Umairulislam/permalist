@@ -6,6 +6,8 @@ import bcrypt from "bcrypt"
 import session from "express-session"
 import passport from "passport"
 import { Strategy as LocalStrategy } from "passport-local"
+import { Strategy as GoogleStrategy } from "passport-google-oauth2"
+import { Strategy as GitHubStrategy } from "passport-github2"
 
 // Initialize environment variables
 dotenv.config()
@@ -102,6 +104,36 @@ app.get("/logout", (req, res) => {
   })
 })
 
+// Google OAuth login route
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+)
+
+// Google OAuth callback route
+app.get(
+  "/auth/google/permalist",
+  passport.authenticate("google", {
+    successRedirect: "/todos",
+    failureRedirect: "/login",
+  })
+)
+
+// GitHub OAuth login route
+app.get(
+  "/auth/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+)
+
+// GitHub OAuth callback route
+app.get(
+  "/auth/github/permalist",
+  passport.authenticate("github", {
+    successRedirect: "/todos",
+    failureRedirect: "/login",
+  })
+)
+
 // Register new user
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body
@@ -171,6 +203,104 @@ passport.use(
         }
       } catch (error) {
         console.error("Error during authentication", error)
+        return cb(error)
+      }
+    }
+  )
+)
+
+// Passport Google OAuth strategy
+passport.use(
+  "google",
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:3000/auth/google/permalist",
+      userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+    },
+    async (accessToken, refreshToken, profile, cb) => {
+      console.log("Google profile: ", profile)
+      const email =
+        profile.emails && profile.emails.length > 0
+          ? profile.emails[0].value
+          : null // Extract email from the profile
+
+      if (!email) {
+        console.error("Email not found in Google profile")
+        return cb(
+          new Error(
+            "Email not found in Google profile. Ensure your Google profile has a valid email address."
+          )
+        )
+      }
+      try {
+        const userCheck = await db.query(
+          "SELECT * FROM users WHERE email = $1",
+          [profile.email]
+        )
+
+        if (userCheck.rows.length > 0) {
+          console.log("Google user found: ", userCheck.rows[0].email)
+          return cb(null, userCheck.rows[0])
+        } else {
+          const insertUser = await db.query(
+            "INSERT INTO users (full_name, email, password) VALUES ($1, $2, $3)",
+            [profile.displayName, profile.email, "google"]
+          )
+          console.log("Google user registered successfully")
+          return cb(null, insertUser.rows[0])
+        }
+      } catch (error) {
+        console.error("Error during Google authentication", error)
+        return cb(error)
+      }
+    }
+  )
+)
+
+// Passport GitHub OAuth strategy
+passport.use(
+  "github",
+  new GitHubStrategy(
+    {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: "http://localhost:3000/auth/github/permalist",
+    },
+    async (accessToken, refreshToken, profile, cb) => {
+      console.log("GitHub profile: ", profile)
+      const emails = profile.emails || []
+      const email = emails.length > 0 ? emails[0].value : null
+
+      if (!email) {
+        console.error("Email not found in GitHub profile")
+        return cb(
+          new Error(
+            "Email not found in GitHub profile. Please make sure your email is public in GitHub settings."
+          )
+        )
+      }
+
+      try {
+        const userCheck = await db.query(
+          "SELECT * FROM users WHERE email = $1",
+          [email]
+        )
+
+        if (userCheck.rows.length > 0) {
+          console.log("GitHub user found: ", userCheck.rows[0].email)
+          return cb(null, userCheck.rows[0])
+        } else {
+          const insertUser = await db.query(
+            "INSERT INTO users (full_name, email, password) VALUES ($1, $2, $3)",
+            [profile.displayName, email, "github"]
+          )
+          console.log("GitHub user registered successfully")
+          return cb(null, insertUser.rows[0])
+        }
+      } catch (error) {
+        console.error("Error during GitHub authentication", error)
         return cb(error)
       }
     }
