@@ -1,4 +1,98 @@
-<body>
-  <h1>Todo List</h1>
-  <P>Coming soon ...</P>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head', { title: 'Todos' }) %>
+  <body>
+    <%- include('partials/header') %>
+
+    <main class="container">
+      <h1>Todos</h1>
+      <form
+        id="add-todo-form"
+        class="form-container"
+        action="/todos"
+        method="POST"
+      >
+        <input
+          type="text"
+          id="description"
+          name="description"
+          placeholder="Add a new todo"
+          required
+        />
+        <button type="submit"><i class="fas fa-plus"></i> Add Todo</button>
+      </form>
+
+      <!-- Display error message if it exists -->
+      <% if (typeof error !== 'undefined' && error) { %>
+      <div class="error-message" id="error-message">
+        <p><%= error %></p>
+      </div>
+      <% } %>
+
+      <ul id="todo-list">
+        <!-- Display a message if no todos are found -->
+        <% if (todos.length === 0) { %>
+        <li class="todo-item">
+          <span class="todo-desc">No todos found </span>
+        </li>
+        <% } %>
+
+        <!-- Loop through the todos and display them -->
+        <% todos.forEach((todo) => { %>
+        <li
+          class="todo-item <%= todo.is_completed ? 'completed' : '' %>"
+          data-id="<%= todo.id %>"
+        >
+          <i class="fa-solid fa-clipboard-list" style="font-size: 25px"></i>
+          <span class="todo-desc"><%= todo.description %></span>
+          <span class="todo-date"
+            ><%= new Date(todo.created_at).toLocaleString('en-US', { weekday:
+            'short', day: 'numeric', month: 'short', hour: 'numeric', minute:
+            'numeric' }) %></span
+          >
+          <form
+            class="complete-form"
+            action="/todos/update"
+            method="POST"
+            style="display: inline"
+          >
+            <input type="hidden" name="id" value="<%= todo.id %>" />
+            <button class="complete-btn" type="submit">
+              <% if (todo.is_completed) { %>
+              <i class="fas fa-undo"></i>
+              <% } else { %>
+              <i class="fas fa-check"></i>
+              <% } %>
+            </button>
+          </form>
+          <form
+            class="delete-form"
+            action="/todos/delete"
+            method="POST"
+            style="display: inline"
+          >
+            <input type="hidden" name="id" value="<%= todo.id %>" />
+            <button class="delete-btn" type="submit">
+              <i class="fas fa-trash"></i>
+            </button>
+          </form>
+        </li>
+        <% }); %>
+      </ul>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+      // Hide the error message after 5 seconds
+      window.addEventListener("DOMContentLoaded", (event) => {
+        const errorMessage = document.getElementById("error-message")
+        if (errorMessage) {
+          setTimeout(() => {
+            errorMessage.style.display = "none"
+          }, 3000) // 5000 milliseconds = 5 seconds
+        }
+      })
+    </script>
+  </body>
+</html>

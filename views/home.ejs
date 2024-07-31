@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Permalist</title>
-    <link rel="stylesheet" href="/css/styles.css" />
-  </head>
+  <%- include('partials/head', { title: 'Todos' }) %>
   <body>
     <%- include('partials/header') %>
-    <div class="container">
+
+    <main class="container">
       <h1>Welcome to Permalist</h1>
       <p>Your personal todo manager</p>
       <div>
         <button onclick="location.href='/login'">Login</button>
         <button onclick="location.href='/register'">Register</button>
       </div>
-    </div>
+    </main>
+
     <%- include('partials/footer') %>
   </body>
 </html>
