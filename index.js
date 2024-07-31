@@ -79,8 +79,88 @@ app.get("/register", (req, res) => {
 
 // Todos route (protected)
 app.get("/todos", isAuthenticated, async (req, res) => {
-  res.render("todos")
-  console.log(`Rendering todos for user: ${req.user.email}`)
+  try {
+    const getTodos = await db.query("SELECT * FROM todos WHERE user_id = $1", [
+      req.user.id,
+    ])
+    res.render("todos", { todos: getTodos.rows, user: req.user })
+    console.log(`Rendering todos for user: ${req.user.email}`)
+  } catch (error) {
+    console.error("Error fetching todos", error)
+    res.send("Error fetching todos")
+  }
+})
+
+// Add todo
+app.post("/todos", isAuthenticated, async (req, res) => {
+  const { description } = req.body
+  try {
+    const checkTodo = await db.query(
+      "SELECT * FROM todos WHERE user_id = $1 AND description = $2",
+      [req.user.id, description]
+    )
+
+    if (checkTodo.rows.length > 0) {
+      console.log("Todo already exists")
+      const todos = await db.query("SELECT * FROM todos WHERE user_id = $1", [
+        req.user.id,
+      ])
+      return res.render("todos", {
+        todos: todos.rows,
+        error: "Todo already exists",
+      })
+    }
+
+    const insertTodo = await db.query(
+      "INSERT INTO todos (user_id, description) VALUES ($1, $2)",
+      [req.user.id, description]
+    )
+    console.log("Todo added successfully")
+    res.redirect("/todos")
+  } catch (error) {
+    console.error("Error adding todo", error)
+    const todos = await db.query("SELECT * FROM todos WHERE user_id = $1", [
+      req.user.id,
+    ])
+    res.render("todos", { todos: todos.rows, error: "Error adding todo" })
+  }
+})
+
+// Delete todo
+app.post("/todos/delete", isAuthenticated, async (req, res) => {
+  const { id } = req.body
+  try {
+    const deleteTodo = await db.query(
+      "DELETE FROM todos WHERE id = $1 AND user_id = $2",
+      [id, req.user.id]
+    )
+    console.log("Todo deleted successfully")
+    res.redirect("/todos")
+  } catch (error) {
+    console.error("Error deleting todo", error)
+    res.send("Error deleting todo")
+  }
+})
+
+// Update todo
+app.post("/todos/update", isAuthenticated, async (req, res) => {
+  const { id } = req.body
+  try {
+    const getTodo = await db.query(
+      "SELECT * FROM todos WHERE id = $1 AND user_id = $2",
+      [id, req.user.id]
+    )
+    const isCompleted = !todo.rows[0].is_completed
+    await db.query(
+      "UPDATE todos SET is_completed = $1 WHERE id = $2 AND user_id = $3",
+      [isCompleted, id, req.user.id]
+    )
+    console.log("Todo updated successfully")
+    res.redirect("/todos")
+  } catch (error) {
+    console.error("Error updating todo", error)
+    res.send("Error updating todo")
+  }
 })
 
 // Login user
@@ -150,7 +230,7 @@ app.post("/register", async (req, res) => {
     } else {
       const hashedPassword = await bcrypt.hash(password, saltRounds)
       const insertUser = await db.query(
-        "INSERT INTO users (full_name, email, password) VALUES ($1, $2, $3)",
+        "INSERT INTO users (full_name, email, password) VALUES ($1, $2, $3) RETURNING *",
         [name, email, hashedPassword]
       )
       console.log("User registered successfully")

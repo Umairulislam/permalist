@@ -1,17 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Permalist</title>
-    <link rel="stylesheet" href="/css/styles.css" />
-  </head>
-  <header>
-    <nav>
+<header>
+  <nav class="nav">
+    <div>
+      <span href="/" class="logo">Permalist</span>
       <a href="/">Home</a>
+    </div>
+    <div class="nav-links">
+      <% if (locals.user) { %>
+      <span>Welcome back,</span>
+      <span class="user-name"><%= user.full_name %></span>
+      <a href="/logout">Logout</a>
+      <% } else { %>
       <a href="/login">Login</a>
       <a href="/register">Register</a>
-      <a href="/logout">Logout</a>
-    </nav>
-  </header>
-</html>
+      <% } %>
+    </div>
+    <div class="hamburger">
+      <i class="fa-solid fa-bars-staggered"></i>
+    </div>
+  </nav>
+
+  <!-- Script to toggle the mobile menu -->
+  <script>
+    const hamburger = document.querySelector(".hamburger")
+    const navLinks = document.querySelector(".nav-links")
+    const menuItems = document.querySelectorAll(".nav-links a")
+
+    const toggleMenu = () => {
+      navLinks.classList.toggle("active")
+
+      if (navLinks.classList.contains("active")) {
+        hamburger.innerHTML = `<i class="fa-solid fa-times"></i>`
+      } else {
+        hamburger.innerHTML = `<i class="fa-solid fa-bars-staggered"></i>`
+      }
+    }
+
+    hamburger.addEventListener("click", toggleMenu)
+
+    menuItems.forEach((item) => {
+      item.addEventListener("click", () => {
+        if (navLinks.classList.contains("active")) {
+          toggleMenu()
+        }
+      })
+    })
+  </script>
+</header>
