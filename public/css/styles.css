@@ -1,3 +1,4 @@
+/* General */
 body {
   font-family: "Arial", sans-serif;
   background-color: #1e1e1e;
@@ -30,6 +31,10 @@ header {
   gap: 10px;
 }
 
+nav a {
+  margin-left: 10px;
+}
+
 .logo {
   font-size: 24px;
   background-color: #4caf50;
@@ -56,9 +61,13 @@ header {
 }
 
 @media (max-width: 768px) {
+  nav a {
+    margin-left: 10px;
+  }
   .hamburger {
     display: flex;
   }
+
   .nav-links.active {
     position: absolute;
     background-color: #1e1e1e;

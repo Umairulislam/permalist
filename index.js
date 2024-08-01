@@ -150,7 +150,7 @@ app.post("/todos/update", isAuthenticated, async (req, res) => {
       "SELECT * FROM todos WHERE id = $1 AND user_id = $2",
       [id, req.user.id]
     )
-    const isCompleted = !todo.rows[0].is_completed
+    const isCompleted = !getTodo.rows[0].is_completed
     await db.query(
       "UPDATE todos SET is_completed = $1 WHERE id = $2 AND user_id = $3",
       [isCompleted, id, req.user.id]
