@@ -39,7 +39,9 @@ app.set("view engine", "ejs")
 // Middleware setup
 app.use(bodyParser.urlencoded({ extended: true }))
 // app.use(express.static("public"))
-app.use(serveStatic(path.join(process.cwd(), "public")))
+app.set("views", process.cwd() + "/views")
+app.set("view engine", "ejs")
+app.use(express.static(process.cwd() + "public"))
 
 // Setup express session
 app.use(
@@ -409,8 +411,8 @@ passport.deserializeUser(async (id, cb) => {
   }
 })
 
-// app.listen(port, () => {
-//   console.log(`Server running on http://localhost:${port}`)
-// })
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`)
+})
 
 export default app
