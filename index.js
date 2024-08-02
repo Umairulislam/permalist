@@ -6,7 +6,7 @@ import bcrypt from "bcrypt"
 import session from "express-session"
 import passport from "passport"
 import path from "path"
-// import { fileURLToPath } from "url"
+import { fileURLToPath } from "url"
 import { Strategy as LocalStrategy } from "passport-local"
 import { Strategy as GoogleStrategy } from "passport-google-oauth2"
 import { Strategy as GitHubStrategy } from "passport-github2"
@@ -40,14 +40,14 @@ app.set("view engine", "ejs")
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // Get __dirname
-// const __filename = fileURLToPath(import.meta.url)
-// const __dirname = path.dirname(__filename)
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Set views directory
-app.set("views", path.join(process.cwd(), "views"))
+app.set("views", path.join(__dirname, "views"))
 
 // Serve static files
-app.use(express.static(path.join(process.cwd(), "public")))
+app.use(express.static(path.join(__dirname, "public")))
 
 // Setup express session
 app.use(
