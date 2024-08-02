@@ -5,8 +5,8 @@ import pg from "pg"
 import bcrypt from "bcrypt"
 import session from "express-session"
 import passport from "passport"
-import serveStatic from "serve-static"
 import path from "path"
+import { fileURLToPath } from "url"
 import { Strategy as LocalStrategy } from "passport-local"
 import { Strategy as GoogleStrategy } from "passport-google-oauth2"
 import { Strategy as GitHubStrategy } from "passport-github2"
@@ -38,10 +38,16 @@ app.set("view engine", "ejs")
 
 // Middleware setup
 app.use(bodyParser.urlencoded({ extended: true }))
-// app.use(express.static("public"))
-app.set("views", process.cwd() + "/views")
-app.set("view engine", "ejs")
-app.use(express.static(process.cwd() + "public"))
+
+// Get __dirname
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// Set views directory
+app.set("views", path.join(__dirname, "views"))
+
+// Serve static files
+app.use(express.static(path.join(__dirname, "public")))
 
 // Setup express session
 app.use(
@@ -56,6 +62,16 @@ app.use(
 // Initialize passport
 app.use(passport.initialize())
 app.use(passport.session())
+
+// Define a route for the home page
+app.get("/", (req, res) => {
+  res.render("home")
+})
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`)
+})
 
 // Middleware to check if user is authenticated
 const isAuthenticated = (req, res, next) => {
