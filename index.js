@@ -406,6 +406,8 @@ passport.deserializeUser(async (id, cb) => {
   }
 })
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`)
-})
+// app.listen(port, () => {
+//   console.log(`Server running on http://localhost:${port}`)
+// })
+
+export default app
