@@ -36,7 +36,8 @@ app.set("view engine", "ejs")
 
 // Middleware setup
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static("public"))
+// app.use(express.static("public"))
+app.use(serveStatic(path.join(__dirname, "public")))
 
 // Setup express session
 app.use(
