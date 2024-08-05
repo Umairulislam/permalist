@@ -6,22 +6,17 @@ import bcrypt from "bcrypt"
 import session from "express-session"
 import passport from "passport"
 import path from "path"
-import { fileURLToPath } from "url"
 import { Strategy as LocalStrategy } from "passport-local"
 import { Strategy as GoogleStrategy } from "passport-google-oauth2"
 import { Strategy as GitHubStrategy } from "passport-github2"
 
-// Loade environment variables
+// Load environment variables
 dotenv.config()
 
 // Initialize Express app
 const app = express()
 const port = 3000
 const saltRounds = 10
-
-// Get current directory path
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 // Configure PostgreSQL client
 const db = new pg.Client({
@@ -35,7 +30,7 @@ const db = new pg.Client({
   },
 })
 
-// Connect to PostgreSQL databas
+// Connect to PostgreSQL database
 db.connect()
   .then(() => console.log("Connected to the PostgreSQL database"))
   .catch((err) =>
@@ -44,13 +39,13 @@ db.connect()
 
 // Set up view engine and static file serving
 app.set("view engine", "ejs")
-app.set("views", path.join(__dirname, "views"))
-app.use(express.static(path.join(__dirname, "public")))
+app.set("views", path.join(process.cwd(), "views"))
+app.use(express.static(path.join(process.cwd(), "public")))
 
 // Middleware setup
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// // Configure session management
+// Configure session management
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -270,7 +265,7 @@ passport.use(
       usernameField: "email",
       passwordField: "password",
     },
-    async function (email, password, cb) {
+    async (email, password, cb) => {
       try {
         const userCheck = await db.query(
           "SELECT * FROM users WHERE email = $1",
@@ -312,11 +307,10 @@ passport.use(
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
     },
     async (accessToken, refreshToken, profile, cb) => {
-      console.log("Google profile: ", profile)
       const email =
         profile.emails && profile.emails.length > 0
           ? profile.emails[0].value
-          : null // Extract email from the profile
+          : null
 
       if (!email) {
         console.error("Email not found in Google profile")
@@ -329,7 +323,7 @@ passport.use(
       try {
         const userCheck = await db.query(
           "SELECT * FROM users WHERE email = $1",
-          [profile.email]
+          [email]
         )
 
         if (userCheck.rows.length > 0) {
@@ -338,7 +332,7 @@ passport.use(
         } else {
           const insertUser = await db.query(
             "INSERT INTO users (full_name, email, password) VALUES ($1, $2, $3)",
-            [profile.displayName, profile.email, "google"]
+            [profile.displayName, email, "google"]
           )
           console.log("Google user registered successfully")
           return cb(null, insertUser.rows[0])
@@ -361,15 +355,16 @@ passport.use(
       callbackURL: "http://localhost:3000/auth/github/permalist",
     },
     async (accessToken, refreshToken, profile, cb) => {
-      console.log("GitHub profile: ", profile)
-      const emails = profile.emails || []
-      const email = emails.length > 0 ? emails[0].value : null
+      const email =
+        profile.emails && profile.emails.length > 0
+          ? profile.emails[0].value
+          : null
 
       if (!email) {
         console.error("Email not found in GitHub profile")
         return cb(
           new Error(
-            "Email not found in GitHub profile. Please make sure your email is public in GitHub settings."
+            "Email not found in GitHub profile. Ensure your GitHub profile has a valid email address."
           )
         )
       }
@@ -399,27 +394,24 @@ passport.use(
   )
 )
 
-// Serialize user
+// Serialize user to store in session
 passport.serializeUser((user, cb) => {
   cb(null, user.id)
 })
 
-// Deserialize user
+// Deserialize user from session
 passport.deserializeUser(async (id, cb) => {
   try {
-    const userCheck = await db.query("SELECT * FROM users WHERE id = $1", [id])
-    if (userCheck.rows.length > 0) {
-      cb(null, userCheck.rows[0])
-    } else {
-      cb(new Error("User not found"))
-    }
+    const getUser = await db.query("SELECT * FROM users WHERE id = $1", [id])
+    cb(null, getUser.rows[0])
   } catch (error) {
-    cb(error)
+    console.error("Error deserializing user", error)
+    cb(error, null)
   }
 })
 
-// app.listen(port, () => {
-//   console.log(`Server running on http://localhost:${port}`)
-// })
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`)
+})
 
 export default app
