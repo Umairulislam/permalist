@@ -64,16 +64,6 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-// Define a route for the home page
-app.get("/", (req, res) => {
-  res.render("home")
-})
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
-})
-
 // Middleware to check if user is authenticated
 const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -428,8 +418,8 @@ passport.deserializeUser(async (id, cb) => {
   }
 })
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`)
-})
+// app.listen(port, () => {
+//   console.log(`Server running on http://localhost:${port}`)
+// })
 
 export default app
