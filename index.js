@@ -11,14 +11,19 @@ import { Strategy as LocalStrategy } from "passport-local"
 import { Strategy as GoogleStrategy } from "passport-google-oauth2"
 import { Strategy as GitHubStrategy } from "passport-github2"
 
-// Initialize environment variables
+// Loade environment variables
 dotenv.config()
 
+// Initialize Express app
 const app = express()
 const port = 3000
 const saltRounds = 10
 
-// Connect to the PostgreSQL database
+// Get current directory path
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// Configure PostgreSQL client
 const db = new pg.Client({
   user: process.env.PG_USER,
   host: process.env.PG_HOST,
@@ -27,29 +32,22 @@ const db = new pg.Client({
   port: process.env.PG_PORT,
 })
 
+// Connect to PostgreSQL databas
 db.connect()
   .then(() => console.log("Connected to the PostgreSQL database"))
   .catch((err) =>
     console.error("Error connecting to the PostgreSQL database", err.stack)
   )
 
-// Set view engine to ejs
+// Set up view engine and static file serving
 app.set("view engine", "ejs")
+app.set("views", path.join(__dirname, "views"))
+app.use(express.static(path.join(__dirname, "public")))
 
 // Middleware setup
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// Get __dirname
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-// Set views directory
-app.set("views", path.join(__dirname, "views"))
-
-// Serve static files
-app.use(express.static(path.join(__dirname, "public")))
-
-// Setup express session
+// // Configure session management
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
