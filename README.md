@@ -51,7 +51,6 @@ Permalist is a full-stack Todo application where users can register, add, edit, 
     GOOGLE_CLIENT_SECRET=your_google_client_secret
     GITHUB_CLIENT_ID=your_github_client_id
     GITHUB_CLIENT_SECRET=your_github_client_secret
-
    ```
 
 4. **Run the server**:
@@ -72,7 +71,10 @@ Permalist is a full-stack Todo application where users can register, add, edit, 
 
 ## 📸 Screenshot
 
-![Permalist](https://user-images.githubusercontent.com/58919619/134772073-4b3b3b3b-4b3b-4b3b-4b3b-4b3b3b3b3b3b.png)
+![Permalist](./public/images/permalist1.png)
+![Permalist](./public/images/permalist2.png)
+![Permalist](./public/images/permalist3.png)
+![Permalist](./public/images/permalist4.png)
 
 ## 📝 License
 
