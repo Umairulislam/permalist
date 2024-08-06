@@ -1,19 +1,23 @@
 # 📝 Permalist
 
-<img src="https://img.shields.io/badge/Node.js-14.x-green?logo=node.js" alt="Node.js" width="150" height="30">
-<img src="https://img.shields.io/badge/Express.js-4.x-blue?logo=express" alt="Express.js" width="150" height="30">
-<img src="https://img.shields.io/badge/PostgreSQL-13.x-blue?logo=postgresql" alt="PostgreSQL" width="150" height="30">
-<img src="https://img.shields.io/badge/Passport-0.4.x-yellow?logo=passport" alt="Passport" width="150" height="30">
-<img src="https://img.shields.io/badge/GitHub%20OAuth-2.0-black?logo=github" alt="GitHub OAuth" width="150" height="30">
-<img src="https://img.shields.io/badge/Google%20OAuth-2.0-red?logo=google" alt="Google OAuth" width="150" height="30">
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+  <img src="https://img.shields.io/badge/Node.js-14.x-green?logo=node.js" height="30">
+  <img src="https://img.shields.io/badge/Express.js-4.x-blue?logo=express" height="30">
+  <img src="https://img.shields.io/badge/PostgreSQL-13.x-blue?logo=postgresql" height="30">
+  <img src="https://img.shields.io/badge/Passport-0.4.x-yellow?logo=passport" height="30">
+  <img src="https://img.shields.io/badge/GitHub%20OAuth-2.0-black?logo=github" height="30">
+  <img src="https://img.shields.io/badge/Google%20OAuth-2.0-red?logo=google" height="30">
+</div>
+</br>
 
 Permalist is a full-stack Todo application where users can register, add, edit, and delete todos. The app supports Google and GitHub OAuth authentication and provides a sleek, responsive user interface with a dark color scheme.
 
 ## 🚀 Features
 
-- **User Authentication**: Register and log in using Google or GitHub.
-- **CRUD Operations**: Create, read, update, and delete todos.
-- **Responsive Design**: Mobile-friendly with a dark theme.
+- 🔒 Secure authentication with GitHub and Google OAuth
+- 📝 Create, update, and delete todos
+- 🌐 Fully responsive design
+- 🎨 Dark mode support
 
 ## 🛠️ Technologies
 
