@@ -352,7 +352,7 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/github/permalist",
+      callbackURL: "https://permalist24.vercel.app/auth/github/permalist",
     },
     async (accessToken, refreshToken, profile, cb) => {
       const email =
