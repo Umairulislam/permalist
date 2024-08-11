@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('partials/head', { title: 'Todos' }) %>
+  <%- include('partials/head', { title: 'Register' }) %>
   <body>
     <%- include('partials/header') %>
 
     <main class="container form-container">
       <h1>Register</h1>
-      <form action="/register" method="post">
+      <form id="register-form" action="/register" method="post">
         <input type="text" name="name" placeholder="Full Name" required />
         <input type="email" name="email" placeholder="Email" required />
         <input
           type="password"
+          id="password"
           name="password"
           placeholder="Password"
           required
         />
-        <input type="submit" value="Register" />
+        <ul id="password-requirements">
+          <li class="invalid">At least 6 characters long</li>
+          <li class="invalid">Contains at least one number</li>
+          <li class="invalid">Contains at least one uppercase letter</li>
+        </ul>
+        <input type="submit" value="Register" disabled />
       </form>
       <p>or sign up with</p>
       <div class="icons">
@@ -29,5 +35,35 @@
     </main>
 
     <%- include('partials/footer') %>
+
+    <script>
+      document
+        .getElementById("password")
+        .addEventListener("input", function () {
+          const password = this.value
+          const requirements = document.getElementById("password-requirements")
+          const submitButton = document.querySelector('input[type="submit"]')
+
+          let lengthRequirement = password.length >= 6
+          let numberRequirement = /[0-9]/.test(password)
+          let uppercaseRequirement = /[A-Z]/.test(password)
+
+          requirements.children[0].className = lengthRequirement
+            ? "valid"
+            : "invalid"
+          requirements.children[1].className = numberRequirement
+            ? "valid"
+            : "invalid"
+          requirements.children[2].className = uppercaseRequirement
+            ? "valid"
+            : "invalid"
+
+          if (lengthRequirement && numberRequirement && uppercaseRequirement) {
+            submitButton.disabled = false
+          } else {
+            submitButton.disabled = true
+          }
+        })
+    </script>
   </body>
 </html>
