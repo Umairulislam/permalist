@@ -1,37 +1,33 @@
 # 📝 Permalist
 
-<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
-  <img src="https://img.shields.io/badge/Node.js-14.x-green?logo=node.js" height="30">
-  <img src="https://img.shields.io/badge/Express.js-4.x-blue?logo=express" height="30">
-  <img src="https://img.shields.io/badge/PostgreSQL-13.x-blue?logo=postgresql" height="30">
-  <img src="https://img.shields.io/badge/Passport-0.4.x-yellow?logo=passport" height="30">
-  <img src="https://img.shields.io/badge/GitHub%20OAuth-2.0-black?logo=github" height="30">
-  <img src="https://img.shields.io/badge/Google%20OAuth-2.0-red?logo=google" height="30">
-</div>
-</br>
-
 Permalist is a full-stack Todo application where users can register, add, edit, and delete todos. The app supports Google and GitHub OAuth authentication and provides a sleek, responsive user interface with a dark color scheme.
 
-## 🚀 Features
+## 💡 Features
 
 - 🔒 Secure authentication with GitHub and Google OAuth
 - 📝 Create, update, and delete todos
 - 🌐 Fully responsive design
 - 🎨 Dark mode support
 
-## 🛠️ Technologies
+## 🛠️ Tech Stack
 
-- **Frontend**: EJS, HTML, CSS
-- **Backend**: Node.js, Express.js
-- **Database**: PostgreSQL
-- **Authentication**: Passport.js, Google OAuth, GitHub OAuth
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)  
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)  
+![EJS](https://img.shields.io/badge/EJS-b4ca65?logo=ejs&logoColor=white)  
+![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)  
+![Express.js](https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=white)  
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)  
+![Passport.js](https://img.shields.io/badge/Passport.js-34E27A?logo=passport&logoColor=white)  
+![Google OAuth](https://img.shields.io/badge/Google%20OAuth-EA4335?logo=google&logoColor=white)  
+![GitHub OAuth](https://img.shields.io/badge/GitHub%20OAuth-181717?logo=github&logoColor=white)  
 
-## 📦 Installation
+
+## 🚀 Getting Started
 
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/yourusername/permalist.git
+   git clone https://github.com/Umairulislam/permalist.git
    cd permalist
    ```
 
@@ -61,7 +57,7 @@ Permalist is a full-stack Todo application where users can register, add, edit, 
    ```bash
    npm start
    ```
-   The server will start at `http://localhost:3000`.
+5. Open your browser and navigate to `http://localhost:3000`
 
 ## 📚 Usage
 
@@ -83,3 +79,7 @@ Permalist is a full-stack Todo application where users can register, add, edit, 
 ## 📝 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+
+## 👨‍💼 Author
+
+Crafted with care by **Engr. Umair Ul Islam**
