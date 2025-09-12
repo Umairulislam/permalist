@@ -11,15 +11,15 @@ Permalist is a full-stack Todo application where users can register, add, edit, 
 
 ## 🛠️ Tech Stack
 
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)  
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)  
-![EJS](https://img.shields.io/badge/EJS-b4ca65?logo=ejs&logoColor=white)  
-![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)  
-![Express.js](https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=white)  
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)  
-![Passport.js](https://img.shields.io/badge/Passport.js-34E27A?logo=passport&logoColor=white)  
-![Google OAuth](https://img.shields.io/badge/Google%20OAuth-EA4335?logo=google&logoColor=white)  
-![GitHub OAuth](https://img.shields.io/badge/GitHub%20OAuth-181717?logo=github&logoColor=white)  
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)  
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)  
+![EJS](https://img.shields.io/badge/EJS-b4ca65?style=for-the-badge&logo=ejs&logoColor=white)  
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)  
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)  
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)  
+![Passport.js](https://img.shields.io/badge/Passport.js-34E27A?style=for-the-badge&logo=passport&logoColor=white)  
+![Google OAuth](https://img.shields.io/badge/Google%20OAuth-EA4335?style=for-the-badge&logo=google&logoColor=white)  
+![GitHub OAuth](https://img.shields.io/badge/GitHub%20OAuth-181717?style=for-the-badge&logo=github&logoColor=white)  
 
 
 ## 🚀 Getting Started
@@ -58,16 +58,6 @@ Permalist is a full-stack Todo application where users can register, add, edit, 
    npm start
    ```
 5. Open your browser and navigate to `http://localhost:3000`
-
-## 📚 Usage
-
-1. **Home Page**: Provides a brief introduction and links to register or log in.
-
-2. **Register/Login**: Sign up or log in using your email, Google, or GitHub account.
-
-3. **Todos Page**: View, add, update, or delete your todos.
-
-4. **Logout**: Click on the logout button to log out of your account.
 
 ## 📸 Screenshot
 
